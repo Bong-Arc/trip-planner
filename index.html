@@ -76,7 +76,7 @@
             padding-top: max(env(safe-area-inset-top, 0px), 10px);
         }
         /* 데스크톱에서는 아이폰 16 Pro 프레임(402x874)으로 보이고, 실제 아이폰에서는 100% 꽉 차게 작동 */
-        @media (min-width: 500px) {
+        @media {
             .iphone-frame {
                 width: 402px;
                 height: 874px;
@@ -104,53 +104,39 @@
             padding-bottom: max(env(safe-area-inset-bottom, 0px), 5px);
         }
 
-        /* 실제 iPhone 홈 화면 웹앱: 브라우저 주소창과 무관하게 화면 전체 사용 */
-        @media (max-width: 499px) {
+        /* 실제 모바일 기기에서는 화면 전체 너비 사용 */
+        @media (hover: none) and (pointer: coarse) {
             html,
             body {
-                width: 100%;
-                height: var(--app-height, 100dvh);
-                min-height: 0;
-                margin: 0;
-                padding: 0;
-                overflow: hidden;
+                width: 100% !important;
+                height: var(--app-height, 100dvh) !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden !important;
             }
 
             body {
                 display: block !important;
-                position: fixed;
+                position: fixed !important;
                 inset: 0;
-                background: #F5F6F9;
             }
 
             .iphone-frame {
-                position: fixed;
-                inset: 0;
-                width: 100%;
-                height: var(--app-height, 100dvh);
-                min-height: 0;
-                max-height: none;
-                margin: 0;
-                border-radius: 0;
-                overflow: hidden;
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start;
-            }
-
-            #main-content {
-                flex: 1 1 0%;
-                min-height: 0;
+                position: fixed !important;
+                top: 0;
+                left: 0;
+                width: 100% !important;
+                height: var(--app-height, 100dvh) !important;
+                max-width: none !important;
+                border-radius: 0 !important;
                 overflow: hidden;
             }
 
-            .iphone-frame > nav {
-                flex: 0 0 auto;
-                width: 100%;
-                margin-top: auto;
-                padding-bottom: max(env(safe-area-inset-bottom, 0px), 14px);
+            .dynamic-island {
+                display: none !important;
             }
         }
+        
         /* Leaflet 커스텀 마커 스타일 */
         .leaflet-container {
             font-family: 'Pretendard', sans-serif;
@@ -2676,5 +2662,28 @@ cale-95 transition" title="내 위치로 이동">
             window.addEventListener('pageshow', updateAppViewportHeight, { passive: true });
         })();
     </script>
+    
+    <script>
+    (function () {
+        function updateAppHeight() {
+            const height = window.innerHeight;
+
+            document.documentElement.style.setProperty(
+                '--app-height',
+                height + 'px'
+            );
+        }
+
+        updateAppHeight();
+
+        window.addEventListener('resize', updateAppHeight);
+        window.addEventListener('orientationchange', function () {
+            setTimeout(updateAppHeight, 250);
+        });
+
+        window.addEventListener('pageshow', updateAppHeight);
+    })();
+    </script>
+    
 </body>
 </html>

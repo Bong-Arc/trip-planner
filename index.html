@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <!-- iOS 홈 화면 추가 시 네이티브 앱처럼 작동하도록 설정 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="마이 트립">
     <title>마이 트립 플래너 - 나만의 올인원 여행 비서</title>
     
@@ -101,41 +101,9 @@
         }
         /* iOS 하단 홈 인디케이터 안전 영역 */
         .safe-bottom {
-            padding-bottom: max(env(safe-area-inset-bottom, 0px), 5px);
+            padding-bottom: max(env(safe-area-inset-bottom, 0px), 14px);
         }
 
-        /* 실제 모바일 기기에서는 화면 전체 너비 사용 */
-        @media (hover: none) and (pointer: coarse) {
-            html,
-            body {
-                width: 100% !important;
-                height: var(--app-height, 100dvh) !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                overflow: hidden !important;
-            }
-
-            body {
-                display: block !important;
-                position: fixed !important;
-                inset: 0;
-            }
-
-            .iphone-frame {
-                position: fixed !important;
-                top: 0;
-                left: 0;
-                width: 100% !important;
-                height: var(--app-height, 100dvh) !important;
-                max-width: none !important;
-                border-radius: 0 !important;
-                overflow: hidden;
-            }
-
-            .dynamic-island {
-                display: none !important;
-            }
-        }
         
         /* Leaflet 커스텀 마커 스타일 */
         .leaflet-container {
@@ -186,6 +154,58 @@
             white-space: nowrap;
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
+    
+    /* 모바일 전체 화면 레이아웃 */
+    @media (max-width: 499px) {
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            min-height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #F5F6F9;
+        }
+
+        body {
+            display: block !important;
+            position: fixed;
+            inset: 0;
+        }
+
+        .iphone-frame {
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100% !important;
+            height: auto !important;
+            min-height: 0;
+            max-width: none;
+            border-radius: 0 !important;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .dynamic-island {
+            display: none !important;
+        }
+
+        #main-content {
+            flex: 1 1 0%;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .iphone-frame > nav {
+            flex-shrink: 0;
+            width: 100%;
+            margin-top: auto;
+        }
+    }
+        
     </style>
 </head>
 <body class="flex items-center justify-center h-[100dvh] select-none overflow-hidden">
@@ -194,7 +214,8 @@
     <div class="iphone-frame bg-[#F5F6F9] flex flex-col justify-between relative text-slate-800">
         
         <!-- 데스크톱 프리뷰용 다이나믹 아일랜드 & 상태바 -->
-                <div class="w-full bg-white shrink-0 z-30" style="height: env(safe-area-inset-top, 44px);"></div>
+        <div class="w-full bg-white shrink-0 z-30"
+             style="height: max(env(safe-area-inset-top, 0px), 44px);"></div>
 
                 <!-- 실질적인 상단 헤더 -->
                 <header class="bg-white px-4 pt-2.5 pb-2.5 border-b border-slate-100 shrink-0 z-20 flex items-center justify-between">
@@ -2662,28 +2683,6 @@ cale-95 transition" title="내 위치로 이동">
             window.addEventListener('pageshow', updateAppViewportHeight, { passive: true });
         })();
     </script>
-    
-    <script>
-    (function () {
-        function updateAppHeight() {
-            const height = window.innerHeight;
 
-            document.documentElement.style.setProperty(
-                '--app-height',
-                height + 'px'
-            );
-        }
-
-        updateAppHeight();
-
-        window.addEventListener('resize', updateAppHeight);
-        window.addEventListener('orientationchange', function () {
-            setTimeout(updateAppHeight, 250);
-        });
-
-        window.addEventListener('pageshow', updateAppHeight);
-    })();
-    </script>
-    
 </body>
 </html>
